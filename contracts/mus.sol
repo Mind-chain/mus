@@ -34,19 +34,20 @@ contract MindUsernameSystem is Ownable, ReentrancyGuard {
         admin = newAdmin;
     }
 
-    function registerUsername(string memory username) external payable onlyOwner nonReentrant {
-        require(bytes(username).length > 0, "Username cannot be empty");
-        require(!bannedUsernames[username], "Username is banned");
-        require(usernameToAddress[username] == address(0), "Username already taken");
-        require(bytes(addressToUsername[msg.sender]).length == 0, "Address already has a username");
-        require(msg.value == registrationFee, "Incorrect registration fee amount");
+function registerUsername(string memory username) external payable nonReentrant {
+    require(bytes(username).length > 0, "Username cannot be empty");
+    require(!bannedUsernames[username], "Username is banned");
+    require(usernameToAddress[username] == address(0), "Username already taken");
+    require(bytes(addressToUsername[msg.sender]).length == 0, "Address already has a username");
+    require(msg.value == registrationFee, "Incorrect registration fee amount");
 
-        totalFees = totalFees.add(msg.value);
-        usernameToAddress[username] = msg.sender;
-        addressToUsername[msg.sender] = username;
+    totalFees = totalFees.add(msg.value);
+    usernameToAddress[username] = msg.sender;
+    addressToUsername[msg.sender] = username;
 
-        emit UsernameRegistered(msg.sender, username, msg.value);
-    }
+    emit UsernameRegistered(msg.sender, username, msg.value);
+}
+
 
     function getUsername(address userAddress) external view returns (string memory) {
         return addressToUsername[userAddress];
